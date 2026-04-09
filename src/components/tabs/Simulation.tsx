@@ -218,50 +218,15 @@ export default function Simulation() {
             </div>
           </div>
         </motion.div>
-
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="space-y-3"
-        >
-          <h3 className="text-lg font-display font-bold text-ink-900 mb-4 px-2 mt-2">Tariff Information</h3>
-          
-          <AccordionItem 
-            title="Residential Rates" 
-            isOpen={openAccordion === 'residential'} 
-            onClick={() => toggleAccordion('residential')}
-          >
-            <p><strong>Tarifa 1, 1A-1F:</strong> Standard residential rates with government subsidies for low consumption. Once the high consumption limit is exceeded, the user is moved to the DAC tariff.</p>
-            <p className="mt-3"><strong>Tarifa DAC (De Alto Consumo):</strong> High consumption residential rate. This tariff loses all government subsidies and has a significantly higher cost per kWh. Solar is highly recommended for DAC users to drop back to subsidized rates.</p>
-          </AccordionItem>
-          
-          <AccordionItem 
-            title="Commercial Rates" 
-            isOpen={openAccordion === 'commercial'} 
-            onClick={() => toggleAccordion('commercial')}
-          >
-            <p><strong>PDBT (Pequeña Demanda Baja Tensión):</strong> For businesses with a maximum demand of up to 25 kW. Billed a flat rate per kWh without capacity charges.</p>
-            <p className="mt-3"><strong>GDBT (Gran Demanda Baja Tensión):</strong> For businesses with a demand greater than 25 kW in low voltage. Includes both energy (kWh) and capacity (kW) charges.</p>
-          </AccordionItem>
-
-          <AccordionItem 
-            title="Industrial Rates" 
-            isOpen={openAccordion === 'industrial'} 
-            onClick={() => toggleAccordion('industrial')}
-          >
-            <p><strong>GDMTO (Gran Demanda Media Tensión Ordinaria):</strong> For industrial users with demand over 25 kW in medium voltage, billed with a single energy rate regardless of the time of day.</p>
-            <p className="mt-3"><strong>GDMTH (Gran Demanda Media Tensión Horaria):</strong> For large industrial users. Energy is billed at different rates depending on the time of day (Base, Intermediate, Peak). Solar is extremely effective at offsetting Peak and Intermediate consumption.</p>
-          </AccordionItem>
-        </motion.div>
         </div>
 
-        <motion.div 
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.1 }}
-          className="lg:col-span-5 bg-ink-900 p-6 md:p-8 rounded-3xl text-white flex flex-col relative overflow-hidden"
-        >
+        <div className="lg:col-span-5 space-y-6">
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.1 }}
+            className="bg-ink-900 p-6 md:p-8 rounded-3xl text-white flex flex-col relative overflow-hidden"
+          >
           <div className="absolute top-0 right-0 p-8 opacity-5">
             <Zap size={250} />
           </div>
@@ -321,6 +286,43 @@ export default function Simulation() {
             Request CFE Interconnection Quote
           </button>
         </motion.div>
+
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="space-y-3"
+        >
+          <h3 className="text-lg font-display font-bold text-ink-900 mb-4 px-2 mt-2">Tariff Information</h3>
+          
+          <AccordionItem 
+            title="Residential Rates" 
+            isOpen={openAccordion === 'residential'} 
+            onClick={() => toggleAccordion('residential')}
+          >
+            <p><strong>Tarifa 1, 1A-1F:</strong> Standard residential rates with government subsidies for low consumption. Once the high consumption limit is exceeded, the user is moved to the DAC tariff.</p>
+            <p className="mt-3"><strong>Tarifa DAC (De Alto Consumo):</strong> High consumption residential rate. This tariff loses all government subsidies and has a significantly higher cost per kWh. Solar is highly recommended for DAC users to drop back to subsidized rates.</p>
+          </AccordionItem>
+          
+          <AccordionItem 
+            title="Commercial Rates" 
+            isOpen={openAccordion === 'commercial'} 
+            onClick={() => toggleAccordion('commercial')}
+          >
+            <p><strong>PDBT (Pequeña Demanda Baja Tensión):</strong> For businesses with a maximum demand of up to 25 kW. Billed a flat rate per kWh without capacity charges.</p>
+            <p className="mt-3"><strong>GDBT (Gran Demanda Baja Tensión):</strong> For businesses with a demand greater than 25 kW in low voltage. Includes both energy (kWh) and capacity (kW) charges.</p>
+          </AccordionItem>
+
+          <AccordionItem 
+            title="Industrial Rates" 
+            isOpen={openAccordion === 'industrial'} 
+            onClick={() => toggleAccordion('industrial')}
+          >
+            <p><strong>GDMTO (Gran Demanda Media Tensión Ordinaria):</strong> For industrial users with demand over 25 kW in medium voltage, billed with a single energy rate regardless of the time of day.</p>
+            <p className="mt-3"><strong>GDMTH (Gran Demanda Media Tensión Horaria):</strong> For large industrial users. Energy is billed at different rates depending on the time of day (Base, Intermediate, Peak). Solar is extremely effective at offsetting Peak and Intermediate consumption.</p>
+          </AccordionItem>
+        </motion.div>
+        </div>
       </div>
     </div>
   );
