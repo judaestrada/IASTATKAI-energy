@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Plug, BatteryCharging, Droplets, Wrench, Activity, LineChart, ArrowRight, Maximize2, X } from 'lucide-react';
+import { Plug, BatteryCharging, Droplets, Wrench, Activity, LineChart, ArrowRight, Maximize2, X, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const SERVICES = [
   {
@@ -8,108 +8,157 @@ const SERVICES = [
     title: 'Grid-Tied / On-Grid',
     desc: 'Connect your solar system directly to the utility grid to offset your energy costs and potentially earn credits for excess power.',
     features: ['Net metering integration', 'Grid synchronization', 'Seamless power switching'],
-    image: '/grid-tied-photo.jpg' // User will upload this to the public folder
+    image: '/grid-tied-family.jpg' // User will upload this to the public folder
   },
   {
     icon: BatteryCharging,
     title: 'Off-Grid / Standalone',
     desc: 'Achieve total energy independence with a self-sustaining system, perfect for remote locations or complete grid autonomy.',
-    features: ['Battery bank sizing', 'Backup generator integration', 'Smart load management']
+    features: ['Battery bank sizing', 'Backup generator integration', 'Smart load management'],
+    image: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&q=80&w=800'
   },
   {
     icon: Droplets,
     title: 'Solar Pumping',
     desc: 'Reliable and cost-effective water pumping solutions powered entirely by the sun, ideal for agriculture and remote water supply.',
-    features: ['Deep well extraction', 'Surface water pumping', 'Automated flow control']
+    features: ['Deep well extraction', 'Surface water pumping', 'Automated flow control'],
+    image: 'https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&q=80&w=800'
   },
   {
     icon: Wrench,
     title: 'Maintenance (O&M)',
     desc: 'Maximize the lifespan and efficiency of your energy assets with our comprehensive Operations and Maintenance programs.',
-    features: ['Preventive inspections', 'Panel cleaning', '24/7 Performance monitoring']
+    features: ['Preventive inspections', 'Panel cleaning', '24/7 Performance monitoring'],
+    image: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&q=80&w=800'
   },
   {
     icon: Activity,
     title: 'Power Factor Correction',
     desc: 'Improve your electrical system\'s efficiency, reduce utility penalties, and lower overall energy consumption.',
-    features: ['Capacitor bank installation', 'Harmonic filtering', 'Load profiling']
+    features: ['Capacitor bank installation', 'Harmonic filtering', 'Load profiling'],
+    image: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&q=80&w=800'
   },
   {
     icon: LineChart,
     title: 'Rate/Tariff Analysis',
     desc: 'Optimize your energy spending by analyzing your consumption patterns against complex utility rate structures.',
-    features: ['Peak load shifting', 'Tariff optimization', 'ROI forecasting']
+    features: ['Peak load shifting', 'Tariff optimization', 'ROI forecasting'],
+    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800'
   }
 ];
 
 export default function Services() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const nextSlide = () => setCurrentIndex((prev) => (prev + 1) % SERVICES.length);
+  const prevSlide = () => setCurrentIndex((prev) => (prev - 1 + SERVICES.length) % SERVICES.length);
+
+  const activeService = SERVICES[currentIndex];
+  const ActiveIcon = activeService.icon;
 
   return (
-    <div className="p-6 md:p-10 max-w-7xl mx-auto">
-      <header className="mb-12 text-center max-w-2xl mx-auto">
+    <div className="p-6 md:p-10 max-w-6xl mx-auto">
+      <header className="mb-10 text-center max-w-2xl mx-auto">
         <h1 className="text-3xl md:text-4xl font-display font-bold text-ink-900 mb-4">Expert Services</h1>
         <p className="text-ink-600 text-lg">
           Comprehensive energy solutions tailored to your specific needs, from grid integration to financial optimization.
         </p>
       </header>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {SERVICES.map((service, i) => (
-          <motion.div 
-            key={i}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.1 }}
-            className="bg-white p-6 md:p-8 rounded-3xl border border-slate-100 shadow-sm flex flex-col h-full hover:shadow-md transition-shadow"
-          >
-            <div className="flex items-start gap-5 mb-6">
-              <div className="w-14 h-14 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center shrink-0">
-                <service.icon size={28} />
-              </div>
-              <div>
-                <h3 className="font-display font-bold text-2xl mb-2 text-ink-900">{service.title}</h3>
-                <p className="text-ink-600 leading-relaxed">{service.desc}</p>
-              </div>
-            </div>
+      {/* Carousel Container */}
+      <div className="bg-white rounded-3xl border border-slate-100 shadow-lg overflow-hidden flex flex-col lg:flex-row min-h-[500px]">
+        
+        {/* Image Side */}
+        <div 
+          className="lg:w-1/2 relative h-64 lg:h-auto cursor-pointer group bg-slate-100 overflow-hidden"
+          onClick={() => setSelectedImage(activeService.image)}
+        >
+          <AnimatePresence mode="wait">
+            <motion.img
+              key={activeService.image}
+              initial={{ opacity: 0, scale: 1.05 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.4 }}
+              src={activeService.image}
+              alt={activeService.title}
+              className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+              referrerPolicy="no-referrer"
+            />
+          </AnimatePresence>
+          <div className="absolute inset-0 bg-ink-900/0 group-hover:bg-ink-900/20 transition-colors flex items-center justify-center z-10">
+            <Maximize2 className="text-white opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-md" size={32} />
+          </div>
+        </div>
 
-            {service.image && (
-              <div 
-                className="mb-6 rounded-2xl overflow-hidden h-48 relative border border-slate-100 cursor-pointer group"
-                onClick={() => setSelectedImage(service.image!)}
-              >
-                <img 
-                  src={service.image} 
-                  alt={service.title} 
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
-                  referrerPolicy="no-referrer" 
-                />
-                <div className="absolute inset-0 bg-ink-900/0 group-hover:bg-ink-900/20 transition-colors flex items-center justify-center">
-                  <Maximize2 className="text-white opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-md" size={32} />
+        {/* Content Side */}
+        <div className="lg:w-1/2 p-8 md:p-12 flex flex-col relative">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeService.title}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+              className="flex-1"
+            >
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-14 h-14 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center shrink-0">
+                  <ActiveIcon size={28} />
                 </div>
+                <h3 className="font-display font-bold text-2xl md:text-3xl text-ink-900">{activeService.title}</h3>
               </div>
-            )}
-            
-            <div className="mt-auto">
-              <h4 className="text-xs font-bold text-ink-900 uppercase tracking-wider mb-3">Key Functions</h4>
-              <ul className="space-y-2 mb-6">
-                {service.features.map((feature, j) => (
-                  <li key={j} className="flex items-center gap-2 text-sm font-medium text-ink-700">
-                    <div className="w-1.5 h-1.5 rounded-full bg-brand-500 shrink-0" />
+              
+              <p className="text-ink-600 text-lg leading-relaxed mb-8">
+                {activeService.desc}
+              </p>
+
+              <h4 className="text-xs font-bold text-ink-900 uppercase tracking-wider mb-4">Key Functions</h4>
+              <ul className="space-y-3 mb-8">
+                {activeService.features.map((feature, j) => (
+                  <li key={j} className="flex items-center gap-3 text-base font-medium text-ink-700">
+                    <div className="w-2 h-2 rounded-full bg-brand-500 shrink-0" />
                     {feature}
                   </li>
                 ))}
               </ul>
-              
-              <button className="w-full px-6 py-3 rounded-xl border-2 border-slate-100 hover:border-brand-500 hover:text-brand-600 font-medium transition-colors flex items-center justify-center gap-2">
-                Learn More
-                <ArrowRight size={18} />
-              </button>
+            </motion.div>
+          </AnimatePresence>
+
+          {/* Navigation Controls */}
+          <div className="mt-auto pt-8 border-t border-slate-100 flex items-center justify-between">
+            <button 
+              onClick={prevSlide}
+              className="w-12 h-12 rounded-full border border-slate-200 flex items-center justify-center text-ink-600 hover:bg-brand-50 hover:text-brand-600 hover:border-brand-200 transition-colors"
+            >
+              <ChevronLeft size={24} />
+            </button>
+            
+            <div className="flex gap-2">
+              {SERVICES.map((_, idx) => (
+                <button 
+                  key={idx}
+                  onClick={() => setCurrentIndex(idx)}
+                  className={`h-2.5 rounded-full transition-all ${
+                    idx === currentIndex ? 'w-8 bg-brand-500' : 'w-2.5 bg-slate-200 hover:bg-slate-300'
+                  }`}
+                  aria-label={`Go to slide ${idx + 1}`}
+                />
+              ))}
             </div>
-          </motion.div>
-        ))}
+
+            <button 
+              onClick={nextSlide}
+              className="w-12 h-12 rounded-full border border-slate-200 flex items-center justify-center text-ink-600 hover:bg-brand-50 hover:text-brand-600 hover:border-brand-200 transition-colors"
+            >
+              <ChevronRight size={24} />
+            </button>
+          </div>
+        </div>
       </div>
 
+      {/* Full Screen Image Viewer */}
       <AnimatePresence>
         {selectedImage && (
           <motion.div
