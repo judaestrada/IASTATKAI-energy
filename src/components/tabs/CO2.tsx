@@ -1,7 +1,14 @@
 import { motion } from 'motion/react';
-import { Leaf, TreePine, Car, Factory } from 'lucide-react';
+import { Leaf, TreePine, Car, Factory, Lightbulb, Zap, Droplets, Recycle } from 'lucide-react';
 
 export default function CO2() {
+  const tips = [
+    { icon: Lightbulb, title: "Switch to LEDs", desc: "LED bulbs use up to 90% less energy and last 25 times longer than traditional incandescent bulbs." },
+    { icon: Zap, title: "Unplug idle electronics", desc: "Devices consume 'vampire power' even when turned off. Use smart power strips to cut the cord." },
+    { icon: Droplets, title: "Wash clothes in cold water", desc: "Heating water accounts for 90% of the energy used by washing machines. Cold water saves energy and protects fabrics." },
+    { icon: Recycle, title: "Optimize your thermostat", desc: "Adjusting your thermostat by just 2 degrees can save up to 10% on your heating and cooling carbon footprint." }
+  ];
+
   return (
     <div className="p-6 md:p-10 max-w-6xl mx-auto">
       <header className="mb-10">
@@ -44,29 +51,78 @@ export default function CO2() {
         </motion.div>
       </div>
 
-      <h3 className="text-xl font-display font-bold text-ink-900 mb-6">What does this mean?</h3>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-        {[
-          { icon: TreePine, value: '112', label: 'Trees planted', color: 'text-emerald-500', bg: 'bg-emerald-50' },
-          { icon: Car, value: '9,800', label: 'Miles not driven', color: 'text-blue-500', bg: 'bg-blue-50' },
-          { icon: Factory, value: '2.5', label: 'Tons of coal saved', color: 'text-slate-500', bg: 'bg-slate-100' }
-        ].map((stat, i) => (
-          <motion.div 
-            key={i}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 + (i * 0.1) }}
-            className="bg-white p-6 rounded-2xl border border-slate-100 flex items-center gap-4"
-          >
-            <div className={`w-12 h-12 rounded-xl ${stat.bg} ${stat.color} flex items-center justify-center shrink-0`}>
-              <stat.icon size={24} />
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-ink-900">{stat.value}</div>
-              <div className="text-sm text-ink-600">{stat.label}</div>
-            </div>
-          </motion.div>
-        ))}
+      <hr className="my-12 border-slate-200" />
+
+      <div className="mb-12">
+        <h3 className="text-2xl font-display font-bold text-ink-900 mb-8">What does this mean?</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
+          {[
+            { icon: TreePine, value: '112', label: 'Trees planted', color: 'text-emerald-500', bg: 'bg-emerald-50', barColor: 'bg-emerald-500', progress: '75%' },
+            { icon: Car, value: '9,800', label: 'Miles not driven', color: 'text-blue-500', bg: 'bg-blue-50', barColor: 'bg-blue-500', progress: '60%' },
+            { icon: Factory, value: '2.5', label: 'Tons of coal saved', color: 'text-slate-500', bg: 'bg-slate-100', barColor: 'bg-slate-500', progress: '40%' }
+          ].map((stat, i) => (
+            <motion.div 
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.15 }}
+              className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm relative overflow-hidden group"
+            >
+              <div className="flex items-center gap-4 mb-6">
+                <motion.div 
+                  whileHover={{ scale: 1.1, rotate: 5 }}
+                  className={`w-14 h-14 rounded-2xl ${stat.bg} ${stat.color} flex items-center justify-center shrink-0`}
+                >
+                  <stat.icon size={28} />
+                </motion.div>
+                <div>
+                  <div className="text-3xl font-display font-bold text-ink-900">{stat.value}</div>
+                  <div className="text-sm font-medium text-ink-600">{stat.label}</div>
+                </div>
+              </div>
+              
+              {/* Animated Progress Bar */}
+              <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                <motion.div 
+                  initial={{ width: 0 }}
+                  whileInView={{ width: stat.progress }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 1.5, delay: 0.3 + (i * 0.2), ease: "easeOut" }}
+                  className={`h-full rounded-full ${stat.barColor}`}
+                />
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+
+      <hr className="my-12 border-slate-200" />
+
+      <div>
+        <h3 className="text-2xl font-display font-bold text-ink-900 mb-8">Tips for reducing CO2</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {tips.map((tip, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1 }}
+              className="flex gap-5 p-6 rounded-3xl bg-slate-50 border border-slate-100 hover:bg-white hover:shadow-md transition-all"
+            >
+              <div className="w-12 h-12 rounded-full bg-white border border-slate-200 flex items-center justify-center shrink-0 text-brand-600 shadow-sm">
+                <tip.icon size={20} />
+              </div>
+              <div>
+                <h4 className="font-bold text-ink-900 mb-2 text-lg">{tip.title}</h4>
+                <p className="text-ink-600 leading-relaxed text-sm">
+                  {tip.desc}
+                </p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
       </div>
     </div>
   );

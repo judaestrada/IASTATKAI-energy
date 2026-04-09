@@ -13,7 +13,8 @@ import {
   Activity, 
   Newspaper, 
   ShoppingCart,
-  Zap
+  Zap,
+  Bot
 } from 'lucide-react';
 
 import HomeTab from './components/tabs/Home';
@@ -23,6 +24,7 @@ import CO2Tab from './components/tabs/CO2';
 import SimulationTab from './components/tabs/Simulation';
 import ReleaseTab from './components/tabs/Release';
 import CartTab from './components/tabs/Cart';
+import ExpertAgent from './components/agent/ExpertAgent';
 
 type TabId = 'home' | 'products' | 'services' | 'co2' | 'simulation' | 'release' | 'cart';
 
@@ -45,13 +47,14 @@ const TABS: TabDefinition[] = [
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<TabId>('home');
+  const [isAgentOpen, setIsAgentOpen] = useState(false);
 
   const ActiveComponent = TABS.find(t => t.id === activeTab)?.component || HomeTab;
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-paper">
       {/* Sidebar Navigation */}
-      <nav className="w-full md:w-64 bg-white border-b md:border-b-0 md:border-r border-slate-200 flex flex-col sticky top-0 md:h-screen z-50">
+      <nav className="w-full md:w-64 bg-white border-b md:border-b-0 md:border-r border-slate-200 flex flex-col sticky top-0 md:h-screen z-40">
         <div className="p-6 flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-brand-500 flex items-center justify-center text-white shadow-lg shadow-brand-500/30">
             <Zap size={24} />
@@ -94,9 +97,17 @@ export default function App() {
           })}
         </div>
         
-        {/* User / Settings area at bottom of sidebar */}
-        <div className="hidden md:block p-4 border-t border-slate-100 mt-auto">
-          <div className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-50 cursor-pointer transition-colors">
+        {/* Agent Button & User area at bottom of sidebar */}
+        <div className="p-4 border-t border-slate-100 mt-auto flex flex-col gap-2">
+          <button
+            onClick={() => setIsAgentOpen(true)}
+            className="flex items-center justify-center gap-2 w-full py-3 px-4 bg-ink-900 hover:bg-ink-800 text-white rounded-xl font-medium transition-colors shadow-sm"
+          >
+            <Bot size={18} className="text-brand-400" />
+            <span>IASTATKAI Expert</span>
+          </button>
+          
+          <div className="hidden md:flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-50 cursor-pointer transition-colors mt-2">
             <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-slate-600 font-medium text-sm">
               JD
             </div>
@@ -109,7 +120,7 @@ export default function App() {
       </nav>
 
       {/* Main Content Area */}
-      <main className="flex-1 relative overflow-hidden flex flex-col h-[calc(100vh-80px)] md:h-screen">
+      <main className="flex-1 relative overflow-hidden flex flex-col h-[calc(100vh-140px)] md:h-screen">
         <AnimatePresence mode="wait">
           <motion.div
             key={activeTab}
@@ -123,6 +134,13 @@ export default function App() {
           </motion.div>
         </AnimatePresence>
       </main>
+
+      {/* Floating Expert Agent */}
+      <ExpertAgent 
+        isOpen={isAgentOpen} 
+        onClose={() => setIsAgentOpen(false)} 
+        currentContext={TABS.find(t => t.id === activeTab)?.label || 'App'}
+      />
     </div>
   );
 }
