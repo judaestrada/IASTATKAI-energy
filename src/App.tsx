@@ -101,9 +101,16 @@ export default function App() {
         <div className="p-4 border-t border-slate-100 mt-auto flex flex-col gap-2">
           <button
             onClick={() => setIsAgentOpen(true)}
-            className="flex items-center justify-center gap-2 w-full py-3 px-4 bg-ink-900 hover:bg-ink-800 text-white rounded-xl font-medium transition-colors shadow-sm"
+            className="flex items-center justify-center gap-2 w-full py-3 px-4 bg-ink-900 hover:bg-ink-800 text-white rounded-xl font-medium transition-colors shadow-sm group"
           >
-            <Bot size={18} className="text-brand-400" />
+            <div className="w-6 h-6 rounded-full overflow-hidden border border-brand-400/30 group-hover:border-brand-400 transition-colors">
+              <img 
+                src="/agent-icon.png" 
+                alt="" 
+                className="w-full h-full object-cover"
+                referrerPolicy="no-referrer"
+              />
+            </div>
             <span>IASTATKAI Expert</span>
           </button>
           

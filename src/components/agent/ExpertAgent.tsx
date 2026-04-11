@@ -99,8 +99,24 @@ export default function ExpertAgent({ isOpen, onClose, currentContext }: ExpertA
             {/* Header */}
             <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-brand-50/50">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-brand-500 flex items-center justify-center text-white shadow-sm">
-                  <Bot size={20} />
+                <div className="w-10 h-10 rounded-full overflow-hidden bg-brand-500 flex items-center justify-center text-white shadow-sm border-2 border-white">
+                  <img 
+                    src="/agent-icon.png" 
+                    alt="IASTATKAI Expert" 
+                    className="w-full h-full object-cover"
+                    referrerPolicy="no-referrer"
+                    onError={(e) => {
+                      // Fallback to Bot icon if image fails to load
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = 'none';
+                      const parent = target.parentElement;
+                      if (parent) {
+                        const botIcon = document.createElement('div');
+                        botIcon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bot"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>';
+                        parent.appendChild(botIcon.firstChild as Node);
+                      }
+                    }}
+                  />
                 </div>
                 <div>
                   <h3 className="font-display font-bold text-ink-900 leading-tight">IASTATKAI Expert</h3>
