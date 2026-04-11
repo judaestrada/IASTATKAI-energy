@@ -37,6 +37,24 @@ const PRODUCTS = [
     rating: 4.6,
     image: 'https://picsum.photos/seed/inverter/400/300',
     desc: 'Hybrid inverter for seamless grid and battery integration.'
+  },
+  {
+    id: 5,
+    name: 'VOGAR VR-Series',
+    category: 'Voltage Regulator',
+    price: '$850',
+    rating: 4.9,
+    image: 'https://picsum.photos/seed/regulator/400/300',
+    desc: 'High-precision industrial voltage regulator by VOGAR, engineered in Mexico for maximum protection.'
+  },
+  {
+    id: 6,
+    name: 'VOGAR UPS-Elite',
+    category: 'UPS Systems',
+    price: '$1,450',
+    rating: 4.8,
+    image: 'https://picsum.photos/seed/ups/400/300',
+    desc: 'Professional Uninterruptible Power Supply by VOGAR. Reliable backup for critical infrastructure.'
   }
 ];
 
@@ -49,7 +67,7 @@ export default function Products() {
           <p className="text-ink-600">High-performance hardware for your energy independence.</p>
         </div>
         <div className="flex gap-2">
-          {['All', 'Solar', 'Wind', 'Storage'].map(filter => (
+          {['All', 'Solar', 'Wind', 'Storage', 'Protection'].map(filter => (
             <button key={filter} className="px-4 py-2 rounded-full text-sm font-medium border border-slate-200 hover:border-brand-500 hover:text-brand-600 transition-colors">
               {filter}
             </button>

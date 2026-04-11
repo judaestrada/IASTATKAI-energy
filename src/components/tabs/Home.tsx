@@ -1,7 +1,11 @@
+import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { ArrowRight, Sun, Wind, Battery } from 'lucide-react';
+import JourneyForm from '../JourneyForm';
 
 export default function Home() {
+  const [isFormOpen, setIsFormOpen] = useState(false);
+
   return (
     <div className="p-6 md:p-10 max-w-6xl mx-auto">
       <header className="mb-12">
@@ -56,11 +60,16 @@ export default function Home() {
           <h2 className="font-display font-bold text-3xl mb-2">Ready to make the switch?</h2>
           <p className="text-slate-400 max-w-md">Get a free consultation and see how much you could save with IASTATKAI Energy solutions.</p>
         </div>
-        <button className="bg-brand-500 hover:bg-brand-600 text-white px-8 py-4 rounded-xl font-medium flex items-center gap-2 transition-colors shrink-0">
+        <button 
+          onClick={() => setIsFormOpen(true)}
+          className="bg-brand-500 hover:bg-brand-600 text-white px-8 py-4 rounded-xl font-medium flex items-center gap-2 transition-colors shrink-0"
+        >
           Start your journey
           <ArrowRight size={20} />
         </button>
       </motion.div>
+
+      <JourneyForm isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} />
     </div>
   );
 }
