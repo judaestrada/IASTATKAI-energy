@@ -8,6 +8,7 @@ import { createServer as createViteServer } from 'vite';
 
 // 1. Load environment variables early
 dotenv.config();
+console.log("¿La llave se cargó?:", process.env.VITE_API_KEY ? "SÍ" : "NO");
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -17,8 +18,8 @@ async function startServer() {
   const PORT = Number(process.env.PORT) || 3000;
 
   // 2. Initialize Gemini AI Client
-  const apiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY || '';
-  const genAI = new GoogleGenerativeAI(apiKey);
+  // Express es Node.js
+const genAI = new GoogleGenerativeAI(process.env.VITE_API_KEY || process.env.API_KEY);
 
   // 3. Middleware
   // CRITICAL: Required to parse JSON payload from the frontend
