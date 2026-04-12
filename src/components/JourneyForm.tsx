@@ -56,46 +56,46 @@ export default function JourneyForm({ isOpen, onClose }: JourneyFormProps) {
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl overflow-hidden"
+            className="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto flex flex-col"
           >
             <button 
               onClick={onClose}
-              className="absolute top-6 right-6 p-2 text-slate-400 hover:text-ink-900 hover:bg-slate-100 rounded-full transition-all z-10"
+              className="absolute top-4 right-4 md:top-6 md:right-6 p-2 text-slate-400 hover:text-ink-900 hover:bg-slate-100 rounded-full transition-all z-10"
             >
               <X size={24} />
             </button>
 
             <div className="flex flex-col md:flex-row min-h-[500px]">
               {/* Sidebar Info */}
-              <div className="md:w-1/3 bg-brand-500 p-8 text-white flex flex-col justify-between">
+              <div className="md:w-1/3 bg-brand-500 p-6 md:p-8 text-white flex flex-col justify-between shrink-0">
                 <div>
-                  <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center mb-6">
-                    <Zap size={28} className="text-white" />
+                  <div className="w-10 h-10 md:w-12 md:h-12 bg-white/20 rounded-2xl flex items-center justify-center mb-4 md:mb-6">
+                    <Zap size={24} className="text-white" />
                   </div>
-                  <h2 className="text-2xl font-display font-bold mb-4">Start Your Journey</h2>
-                  <p className="text-brand-100 text-sm leading-relaxed">
+                  <h2 className="text-xl md:text-2xl font-display font-bold mb-2 md:mb-4">Start Your Journey</h2>
+                  <p className="text-brand-100 text-sm leading-relaxed hidden md:block">
                     Provide us with some basic information about your energy needs, and our experts will create a custom proposal for you.
                   </p>
                 </div>
                 
-                <div className="mt-8 space-y-4">
-                  <div className="flex items-center gap-3 text-xs font-medium text-brand-100 uppercase tracking-widest">
-                    <span className={`w-6 h-6 rounded-full flex items-center justify-center border ${step >= 1 ? 'bg-white text-brand-500 border-white' : 'border-brand-300'}`}>1</span>
+                <div className="mt-6 md:mt-8 flex flex-row md:flex-col gap-4 md:space-y-4 overflow-x-auto pb-2 md:pb-0 hide-scrollbar">
+                  <div className="flex items-center gap-2 md:gap-3 text-xs font-medium text-brand-100 uppercase tracking-widest whitespace-nowrap">
+                    <span className={`w-6 h-6 rounded-full flex items-center justify-center border shrink-0 ${step >= 1 ? 'bg-white text-brand-500 border-white' : 'border-brand-300'}`}>1</span>
                     Basic Info
                   </div>
-                  <div className="flex items-center gap-3 text-xs font-medium text-brand-100 uppercase tracking-widest">
-                    <span className={`w-6 h-6 rounded-full flex items-center justify-center border ${step >= 2 ? 'bg-white text-brand-500 border-white' : 'border-brand-300'}`}>2</span>
+                  <div className="flex items-center gap-2 md:gap-3 text-xs font-medium text-brand-100 uppercase tracking-widest whitespace-nowrap">
+                    <span className={`w-6 h-6 rounded-full flex items-center justify-center border shrink-0 ${step >= 2 ? 'bg-white text-brand-500 border-white' : 'border-brand-300'}`}>2</span>
                     Property
                   </div>
-                  <div className="flex items-center gap-3 text-xs font-medium text-brand-100 uppercase tracking-widest">
-                    <span className={`w-6 h-6 rounded-full flex items-center justify-center border ${step >= 3 ? 'bg-white text-brand-500 border-white' : 'border-brand-300'}`}>3</span>
+                  <div className="flex items-center gap-2 md:gap-3 text-xs font-medium text-brand-100 uppercase tracking-widest whitespace-nowrap">
+                    <span className={`w-6 h-6 rounded-full flex items-center justify-center border shrink-0 ${step >= 3 ? 'bg-white text-brand-500 border-white' : 'border-brand-300'}`}>3</span>
                     Requirements
                   </div>
                 </div>
               </div>
 
               {/* Form Content */}
-              <div className="flex-1 p-8 md:p-12">
+              <div className="flex-1 p-6 md:p-12 flex flex-col">
                 {isSuccess ? (
                   <div className="h-full flex flex-col items-center justify-center text-center">
                     <motion.div
@@ -171,7 +171,7 @@ export default function JourneyForm({ isOpen, onClose }: JourneyFormProps) {
                           className="space-y-4"
                         >
                           <h4 className="text-lg font-semibold text-ink-900 mb-4">Property Details</h4>
-                          <div className="grid grid-cols-3 gap-3">
+                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                             {[
                               { id: 'residential', icon: Home, label: 'Home' },
                               { id: 'commercial', icon: Building2, label: 'Office' },

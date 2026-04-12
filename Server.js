@@ -17,7 +17,8 @@ async function startServer() {
   const PORT = Number(process.env.PORT) || 3000;
 
   // 2. Initialize Gemini AI Client
-  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
+  const apiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY || '';
+  const genAI = new GoogleGenerativeAI(apiKey);
 
   // 3. Middleware
   // CRITICAL: Required to parse JSON payload from the frontend

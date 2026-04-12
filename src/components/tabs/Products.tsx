@@ -66,7 +66,7 @@ export default function Products() {
           <h1 className="text-3xl font-display font-bold text-ink-900 mb-2">Our Products</h1>
           <p className="text-ink-600">High-performance hardware for your energy independence.</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           {['All', 'Solar', 'Wind', 'Storage', 'Protection'].map(filter => (
             <button key={filter} className="px-4 py-2 rounded-full text-sm font-medium border border-slate-200 hover:border-brand-500 hover:text-brand-600 transition-colors">
               {filter}
