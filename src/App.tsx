@@ -18,6 +18,7 @@ import {
   AlertTriangle
 } from 'lucide-react';
 
+import { CartProvider } from './context/CartContext';
 import HomeTab from './components/tabs/Home';
 import ProductsTab from './components/tabs/Products';
 import ServicesTab from './components/tabs/Services';
@@ -47,6 +48,14 @@ const TABS: TabDefinition[] = [
 ];
 
 export default function App() {
+  return (
+    <CartProvider>
+      <AppContent />
+    </CartProvider>
+  );
+}
+
+function AppContent() {
   const [activeTab, setActiveTab] = useState<TabId>('home');
   const [isAgentOpen, setIsAgentOpen] = useState(false);
 

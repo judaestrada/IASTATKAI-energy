@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Plug, BatteryCharging, Droplets, Wrench, Activity, LineChart, ArrowRight, Maximize2, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Plug, BatteryCharging, Droplets, Wrench, Activity, LineChart, ArrowRight, Maximize2, X, ChevronLeft, ChevronRight, ShoppingCart } from 'lucide-react';
+import { useCart } from '../../context/CartContext';
 
 const SERVICES = [
   {
@@ -8,46 +9,53 @@ const SERVICES = [
     title: 'Grid-Tied / On-Grid',
     desc: 'Connect your solar system directly to the utility grid to offset your energy costs and potentially earn credits for excess power.',
     features: ['Net metering integration', 'Grid synchronization', 'Seamless power switching'],
-    image: '/grid-tied-family.jpg' // User will upload this to the public folder
+    image: '/grid-tied-family.jpg', // User will upload this to the public folder
+    price: 2500
   },
   {
     icon: BatteryCharging,
     title: 'Off-Grid / Standalone',
     desc: 'Achieve total energy independence with a self-sustaining system, perfect for remote locations or complete grid autonomy.',
     features: ['Battery bank sizing', 'Backup generator integration', 'Smart load management'],
-    image: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&q=80&w=800'
+    image: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&q=80&w=800',
+    price: 3500
   },
   {
     icon: Droplets,
     title: 'Solar Pumping',
     desc: 'Reliable and cost-effective water pumping solutions powered entirely by the sun, ideal for agriculture and remote water supply.',
     features: ['Deep well extraction', 'Surface water pumping', 'Automated flow control'],
-    image: 'https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&q=80&w=800'
+    image: 'https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&q=80&w=800',
+    price: 1800
   },
   {
     icon: Wrench,
     title: 'Maintenance (O&M)',
     desc: 'Maximize the lifespan and efficiency of your energy assets with our comprehensive Operations and Maintenance programs.',
     features: ['Preventive inspections', 'Panel cleaning', '24/7 Performance monitoring'],
-    image: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&q=80&w=800'
+    image: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&q=80&w=800',
+    price: 500
   },
   {
     icon: Activity,
     title: 'Power Factor Correction',
     desc: 'Improve your electrical system\'s efficiency, reduce utility penalties, and lower overall energy consumption.',
     features: ['Capacitor bank installation', 'Harmonic filtering', 'Load profiling'],
-    image: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&q=80&w=800'
+    image: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&q=80&w=800',
+    price: 1200
   },
   {
     icon: LineChart,
     title: 'Rate/Tariff Analysis',
     desc: 'Optimize your energy spending by analyzing your consumption patterns against complex utility rate structures.',
     features: ['Peak load shifting', 'Tariff optimization', 'ROI forecasting'],
-    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800'
+    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800',
+    price: 300
   }
 ];
 
 export default function Services() {
+  const { addToCart } = useCart();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -123,6 +131,27 @@ export default function Services() {
                   </li>
                 ))}
               </ul>
+
+              <div className="flex items-center justify-between mt-auto">
+                <div className="flex flex-col">
+                  <span className="text-sm text-ink-600 font-medium">Starting at</span>
+                  <span className="font-display font-bold text-2xl text-ink-900">${activeService.price.toLocaleString()}</span>
+                </div>
+                <button 
+                  onClick={() => addToCart({
+                    id: `srv-${currentIndex}`,
+                    name: activeService.title,
+                    category: 'Service',
+                    type: 'service',
+                    price: activeService.price,
+                    image: activeService.image
+                  })}
+                  className="px-6 py-3 rounded-xl bg-brand-500 text-white flex items-center justify-center gap-2 hover:bg-brand-600 transition-colors font-bold shadow-sm shadow-brand-500/20"
+                >
+                  <ShoppingCart size={18} />
+                  Add to Cart
+                </button>
+              </div>
             </motion.div>
           </AnimatePresence>
 
