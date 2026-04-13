@@ -5,7 +5,7 @@ const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY || "
 
 // 2. Define the System Instruction (The "IASTATKAI" Persona)
 const systemInstruction = `
-  You are the IASTATKAI Agent, a specialized assistant for Mesweb.
+  You are the IASTATKAI Agent, a specialized assistant for IASTATKAI energy.
   Your goal is to [Describe your agent's specific goal here].
   Always remain professional and use the tools provided to fetch real-time data.
 `;
@@ -16,7 +16,7 @@ const tools: Tool[] = [
     functionDeclarations: [
       {
         name: "get_user_data",
-        description: "Fetches user statistics from the Mesweb database.",
+        description: "Fetches user statistics from the IASTATKAI energy database.",
         parameters: {
           type: SchemaType.OBJECT,
           properties: {
