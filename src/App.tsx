@@ -26,15 +26,21 @@ import CO2Tab from './components/tabs/CO2';
 import SimulationTab from './components/tabs/Simulation';
 import ReleaseTab from './components/tabs/Release';
 import CartTab from './components/tabs/Cart';
-import ExpertAgent from './components/agent/ExpertAgent';
+import OrdersTab from './components/tabs/Orders';
 
-type TabId = 'home' | 'products' | 'services' | 'co2' | 'simulation' | 'release' | 'cart';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import ProfileTab from './components/tabs/Profile';
+import AdminTab from './components/tabs/Admin';
+
+type TabId = 'home' | 'products' | 'services' | 'co2' | 'simulation' | 'release' | 'cart' | 'orders' | 'profile' | 'admin';
 
 interface TabDefinition {
   id: TabId;
   label: string;
   icon: React.ElementType;
   component: React.ElementType;
+  requiresAuth?: boolean;
+  requiresAdmin?: boolean;
 }
 
 const TABS: TabDefinition[] = [
@@ -45,19 +51,24 @@ const TABS: TabDefinition[] = [
   { id: 'simulation', label: 'Simulation', icon: Activity, component: SimulationTab },
   { id: 'release', label: 'Release', icon: Newspaper, component: ReleaseTab },
   { id: 'cart', label: 'Cart', icon: ShoppingCart, component: CartTab },
+  { id: 'orders', label: 'Orders', icon: Package, component: OrdersTab, requiresAuth: true },
+  { id: 'profile', label: 'Profile', icon: Bot, component: ProfileTab, requiresAuth: true },
+  { id: 'admin', label: 'Admin', icon: AlertTriangle, component: AdminTab, requiresAdmin: true },
 ];
 
 export default function App() {
   return (
-    <CartProvider>
-      <AppContent />
-    </CartProvider>
+    <AuthProvider>
+      <CartProvider>
+        <AppContent />
+      </CartProvider>
+    </AuthProvider>
   );
 }
 
 function AppContent() {
   const [activeTab, setActiveTab] = useState<TabId>('home');
-  const [isAgentOpen, setIsAgentOpen] = useState(false);
+  const { currentUser, userProfile, isAuthReady, authError, clearAuthError, loginWithGoogle, logout } = useAuth();
 
   const ActiveComponent = TABS.find(t => t.id === activeTab)?.component || HomeTab;
   
@@ -68,14 +79,6 @@ function AppContent() {
 
   return (
     <div className="min-h-screen flex flex-col bg-paper">
-      {isApiKeyMissing && (
-        <div className="bg-red-500 text-white px-4 py-3 text-sm font-medium flex items-center justify-center gap-2 z-[100] relative w-full">
-          <AlertTriangle size={16} className="shrink-0" />
-          <span className="text-center">
-            Configuration Error: <code className="bg-red-600 px-1 py-0.5 rounded">GEMINI_API_KEY</code> or <code className="bg-red-600 px-1 py-0.5 rounded">VITE_GEMINI_API_KEY</code> is missing from your .env file. The AI Expert features will not work.
-          </span>
-        </div>
-      )}
       <div className="flex-1 flex flex-col md:flex-row">
         {/* Sidebar Navigation */}
         <nav className="w-full md:w-64 bg-white border-b md:border-b-0 md:border-r border-slate-200 flex flex-col sticky top-0 md:h-screen z-40 shrink-0">
@@ -91,6 +94,11 @@ function AppContent() {
 
           <div className="flex-1 overflow-x-auto md:overflow-y-auto px-4 pb-4 md:pb-0 flex md:flex-col gap-1 hide-scrollbar">
             {TABS.map((tab) => {
+              // Hide tabs if they require auth and user is unauthenticated
+              if (tab.requiresAuth && !currentUser) return null;
+              // Hide tabs if they require admin and user is not an admin
+              if (tab.requiresAdmin && userProfile?.role !== 'admin') return null;
+
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;
               
@@ -121,32 +129,54 @@ function AppContent() {
             })}
           </div>
           
-          {/* Agent Button & User area at bottom of sidebar */}
+          {/* User area at bottom of sidebar */}
           <div className="p-4 border-t border-slate-100 mt-auto flex flex-col gap-2">
-            <button
-              onClick={() => setIsAgentOpen(true)}
-              className="flex items-center justify-center gap-2 w-full py-3 px-4 bg-ink-900 hover:bg-ink-800 text-white rounded-xl font-medium transition-colors shadow-sm group"
-            >
-              <div className="w-6 h-6 rounded-full overflow-hidden border border-brand-400/30 group-hover:border-brand-400 transition-colors">
-                <img 
-                  src="/agent-icon.png" 
-                  alt="" 
-                  className="w-full h-full object-cover"
-                  referrerPolicy="no-referrer"
-                />
+            {!isAuthReady ? (
+              <div className="text-sm text-slate-500 text-center py-2 animate-pulse">Loading...</div>
+            ) : currentUser && userProfile ? (
+              <div className="hidden md:flex flex-col gap-3 mt-2">
+                <div 
+                  className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-50 cursor-pointer transition-colors"
+                  onClick={() => setActiveTab('profile')}
+                >
+                  <div className="w-8 h-8 rounded-full bg-brand-100 text-brand-600 flex flex-shrink-0 items-center justify-center font-medium text-sm">
+                    {userProfile.name?.charAt(0) || 'U'}
+                  </div>
+                  <div className="flex-1 overflow-hidden">
+                    <p className="text-sm font-medium text-ink-900 truncate">{userProfile.name}</p>
+                    <p className="text-xs text-ink-600 truncate capitalize">{userProfile.role} Member</p>
+                  </div>
+                </div>
+                <button
+                  onClick={logout}
+                  className="text-xs text-slate-500 hover:text-red-500 transition-colors text-left px-4"
+                >
+                  Log Out
+                </button>
               </div>
-              <span>IASTATKAI Expert</span>
-            </button>
-            
-            <div className="hidden md:flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-50 cursor-pointer transition-colors mt-2">
-              <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-slate-600 font-medium text-sm">
-                JD
+            ) : (
+              <div className="mt-2 px-2">
+                <button
+                  onClick={loginWithGoogle}
+                  className="w-full flex items-center gap-2 justify-center py-2.5 bg-ink-900 text-white rounded-lg text-sm font-medium hover:bg-ink-800 transition-colors"
+                >
+                  Log In with Google
+                </button>
               </div>
-              <div className="flex-1 overflow-hidden">
-                <p className="text-sm font-medium text-ink-900 truncate">Juan David</p>
-                <p className="text-xs text-ink-600 truncate">Pro Member</p>
+            )}
+            {/* Show auth error if any */}
+            {authError && (
+              <div className="mt-2 bg-red-50 text-red-600 text-xs p-3 rounded-lg flex gap-2 items-start relative">
+                <AlertTriangle size={14} className="shrink-0 mt-0.5" />
+                <span className="flex-1">{authError}</span>
+                <button 
+                  onClick={clearAuthError}
+                  className="absolute top-2 right-2 text-red-400 hover:text-red-600"
+                >
+                  &times;
+                </button>
               </div>
-            </div>
+            )}
           </div>
         </nav>
 
@@ -161,17 +191,14 @@ function AppContent() {
               transition={{ duration: 0.2 }}
               className="flex-1 overflow-y-auto"
             >
-              <ActiveComponent />
+              {activeTab === 'cart' ? (
+                <ActiveComponent onNavigateToOrders={() => setActiveTab('orders')} />
+              ) : (
+                <ActiveComponent />
+              )}
             </motion.div>
           </AnimatePresence>
         </main>
-
-        {/* Floating Expert Agent */}
-        <ExpertAgent 
-          isOpen={isAgentOpen} 
-          onClose={() => setIsAgentOpen(false)} 
-          currentContext={TABS.find(t => t.id === activeTab)?.label || 'App'}
-        />
       </div>
     </div>
   );

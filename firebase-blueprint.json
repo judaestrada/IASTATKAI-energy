@@ -1,0 +1,44 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile containing roles and personal information.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "name": { "type": "string" },
+        "role": { "type": "string", "enum": ["client", "admin"] },
+        "phone": { "type": "string" },
+        "address": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "name", "role", "createdAt"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "An energy product or service order.",
+      "type": "object",
+      "properties": {
+        "trackingId": { "type": "string" },
+        "userId": { "type": "string" },
+        "items": { "type": "string", "description": "JSON stringified array of items" },
+        "total": { "type": "number" },
+        "status": { "type": "string", "enum": ["pending_payment", "processing", "shipped", "delivered", "failed"] },
+        "paymentMethod": { "type": "string" },
+        "date": { "type": "string", "format": "date-time" }
+      },
+      "required": ["trackingId", "userId", "items", "total", "status", "paymentMethod", "date"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "A user's profile."
+    },
+    "/orders/{orderId}": {
+      "schema": "Order",
+      "description": "Tracked orders in the system."
+    }
+  }
+}

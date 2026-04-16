@@ -1,15 +1,22 @@
 import React, { useState } from 'react';
-import { motion } from 'motion/react';
-import { Trash2, ArrowRight, ShieldCheck, Package, Wrench, Search } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { Trash2, ArrowRight, ShieldCheck, Package, Wrench, Search, CreditCard, Lock, LogIn } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
+import { useAuth } from '../../context/AuthContext';
 
-export default function Cart() {
-  const { cartItems, updateQuantity, removeItem, clearCart } = useCart();
+export default function Cart({ onNavigateToOrders }: { onNavigateToOrders?: () => void }) {
+  const { cartItems, updateQuantity, removeItem, clearCart, placeOrder } = useCart();
+  const { currentUser, loginWithGoogle } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [checkoutStatus, setCheckoutStatus] = useState<'idle' | 'processing' | 'success'>('idle');
   const [paymentMethod, setPaymentMethod] = useState<'card' | 'paypal' | 'bank'>('card');
   const [trackingId, setTrackingId] = useState<string>('');
+  
+  // Card Details (Simulated)
+  const [cardNumber, setCardNumber] = useState('');
+  const [expiry, setExpiry] = useState('');
+  const [cvc, setCvc] = useState('');
 
   const subtotal = cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
   const tax = subtotal * 0.08; // 8% tax
@@ -21,6 +28,11 @@ export default function Cart() {
   );
 
   const handleCheckout = async () => {
+    if (paymentMethod === 'card' && (!cardNumber || !expiry || !cvc)) {
+      alert("Please fill in your payment details before checking out.");
+      return;
+    }
+
     setIsCheckingOut(true);
     setCheckoutStatus('processing');
     
@@ -28,25 +40,25 @@ export default function Cart() {
     setTrackingId(generatedTrackingId);
 
     const orderPayload = {
-      items: cartItems,
-      totals: { subtotal, tax, total },
+      trackingId: generatedTrackingId,
+      items: [...cartItems],
+      total: total,
       paymentMethod,
-      timestamp: new Date().toISOString(),
-      status: 'pending_payment',
-      trackingId: generatedTrackingId
+      date: new Date().toISOString(),
+      status: 'processing' as const
     };
-    
-    console.log("Committing to IASTATKAI database:", orderPayload);
     
     // Simulate API call
     setTimeout(() => {
+      placeOrder(orderPayload);
       setCheckoutStatus('success');
       setTimeout(() => {
         clearCart();
         setIsCheckingOut(false);
         setCheckoutStatus('idle');
-      }, 3000);
-    }, 1500);
+        if (onNavigateToOrders) onNavigateToOrders();
+      }, 4000);
+    }, 2000);
   };
 
   if (cartItems.length === 0 && checkoutStatus === 'idle') {
@@ -77,10 +89,14 @@ export default function Cart() {
         <p className="text-ink-600 mb-8 text-center max-w-md">
           Your order for energy products and services has been confirmed. You will receive an email with the tracking and installation details shortly.
         </p>
-        <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm text-center">
+        <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm text-center mb-6">
           <p className="text-sm text-ink-600 mb-1">Your Tracking ID</p>
           <p className="text-xl font-mono font-bold text-brand-600">{trackingId}</p>
         </div>
+        <p className="text-sm text-slate-500 flex items-center justify-center gap-2">
+          <div className="w-5 h-5 rounded-full border-2 border-slate-300 border-t-slate-600 animate-spin" />
+          Transferring to Order Tracking...
+        </p>
       </div>
     );
   }
@@ -206,7 +222,7 @@ export default function Cart() {
 
             <div className="mb-6">
               <h3 className="font-medium text-ink-900 mb-3">Payment Method</h3>
-              <div className="space-y-2">
+              <div className="space-y-2 mb-4">
                 <label className={`flex items-center gap-3 p-3 border rounded-xl cursor-pointer transition-colors ${paymentMethod === 'card' ? 'border-brand-500 bg-brand-50' : 'border-slate-200 hover:border-slate-300'}`}>
                   <input type="radio" name="payment" value="card" checked={paymentMethod === 'card'} onChange={() => setPaymentMethod('card')} className="text-brand-500 focus:ring-brand-500" />
                   <span className="text-sm font-medium text-ink-900">Credit / Debit Card</span>
@@ -220,25 +236,92 @@ export default function Cart() {
                   <span className="text-sm font-medium text-ink-900">Bank Transfer</span>
                 </label>
               </div>
+
+              <AnimatePresence>
+                {paymentMethod === 'card' && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="space-y-3 pt-2 pb-4">
+                      <div>
+                        <label className="block text-xs font-medium text-ink-600 mb-1">Card Number</label>
+                        <div className="relative">
+                          <CreditCard className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+                          <input 
+                            type="text" 
+                            placeholder="0000 0000 0000 0000" 
+                            className="w-full pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 font-mono tracking-widest placeholder:tracking-normal placeholder:font-sans"
+                            value={cardNumber}
+                            onChange={(e) => {
+                              // Auto format with spaces logic could go here
+                              setCardNumber(e.target.value.replace(/[^0-9 ]/g, '').substring(0, 19));
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <div className="flex gap-3">
+                        <div className="flex-1">
+                          <label className="block text-xs font-medium text-ink-600 mb-1">Expiry</label>
+                          <input 
+                            type="text" 
+                            placeholder="MM/YY" 
+                            className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500"
+                            value={expiry}
+                            onChange={(e) => setExpiry(e.target.value)}
+                          />
+                        </div>
+                        <div className="flex-1">
+                          <label className="block text-xs font-medium text-ink-600 mb-1">CVC</label>
+                          <div className="relative">
+                            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={14} />
+                            <input 
+                              type="password" 
+                              placeholder="***" 
+                              className="w-full pl-8 pr-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500"
+                              value={cvc}
+                              onChange={(e) => setCvc(e.target.value.replace(/[^0-9]/g, '').substring(0, 4))}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
-            <button 
-              onClick={handleCheckout}
-              disabled={isCheckingOut}
-              className="w-full bg-brand-500 hover:bg-brand-600 disabled:bg-brand-300 text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-colors mb-4"
-            >
-              {checkoutStatus === 'processing' ? (
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  Processing...
-                </div>
-              ) : (
-                <>
-                  Checkout
-                  <ArrowRight size={18} />
-                </>
-              )}
-            </button>
+            {!currentUser ? (
+              <>
+                <button 
+                  onClick={loginWithGoogle}
+                  className="w-full bg-ink-900 hover:bg-ink-800 text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-colors mb-4"
+                >
+                  <LogIn size={18} />
+                  Log in to Checkout
+                </button>
+              </>
+            ) : (
+              <button 
+                onClick={handleCheckout}
+                disabled={isCheckingOut}
+                className="w-full bg-brand-500 hover:bg-brand-600 disabled:bg-brand-300 text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-colors mb-4"
+              >
+                {checkoutStatus === 'processing' ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Processing...
+                  </div>
+                ) : (
+                  <>
+                    Checkout
+                    <ArrowRight size={18} />
+                  </>
+                )}
+              </button>
+            )}
 
             <div className="flex items-center justify-center gap-2 text-xs text-slate-500">
               <ShieldCheck size={14} />
