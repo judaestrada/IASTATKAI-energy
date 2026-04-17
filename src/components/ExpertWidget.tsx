@@ -65,7 +65,7 @@ export default function ExpertWidget() {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
+    <div className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50 flex flex-col items-end">
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -73,7 +73,7 @@ export default function ExpertWidget() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="mb-4 w-[320px] sm:w-[380px] md:w-[450px] lg:w-[500px] h-[450px] md:h-[600px] lg:h-[700px] max-h-[70vh] md:max-h-[85vh] bg-white rounded-2xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden"
+            className="mb-4 w-[320px] sm:w-[380px] md:w-[450px] lg:w-[500px] h-[450px] md:h-[600px] lg:h-[700px] max-h-[70vh] md:max-h-[85vh] bg-white rounded-2xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden origin-bottom-right"
           >
             {/* Header */}
             <header className="bg-ink-900 text-white px-4 py-3 md:py-4 flex justify-between items-center shrink-0">
