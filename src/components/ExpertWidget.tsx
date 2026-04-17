@@ -73,7 +73,7 @@ export default function ExpertWidget() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="mb-4 w-[320px] sm:w-[380px] md:w-[450px] lg:w-[500px] h-[450px] md:h-[600px] lg:h-[700px] max-h-[70vh] md:max-h-[85vh] bg-white rounded-2xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden origin-bottom-right"
+            className="mb-4 w-[calc(100vw-2rem)] sm:w-[380px] md:w-[450px] lg:w-[500px] h-[calc(100dvh-7rem)] sm:h-[500px] md:h-[600px] lg:h-[700px] max-h-[85dvh] sm:max-h-[80vh] md:max-h-[85vh] bg-white rounded-[20px] sm:rounded-2xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden origin-bottom-right overscroll-contain"
           >
             {/* Header */}
             <header className="bg-ink-900 text-white px-4 py-3 md:py-4 flex justify-between items-center shrink-0">
@@ -99,7 +99,7 @@ export default function ExpertWidget() {
             </header>
             
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50/50">
+            <div className="flex-1 overflow-y-auto overscroll-contain p-4 space-y-4 bg-slate-50/50">
               {messages.map((msg, index) => (
                 <div key={index} className={`flex gap-3 max-w-[90%] md:max-w-[85%] ${msg.role === 'user' ? 'ml-auto flex-row-reverse' : ''}`}>
                   <div className={`w-7 h-7 md:w-8 md:h-8 rounded-full shrink-0 flex items-center justify-center overflow-hidden border ${
