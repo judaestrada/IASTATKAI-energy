@@ -15,6 +15,7 @@ import {
   ShoppingCart,
   Zap,
   Bot,
+  User,
   AlertTriangle
 } from 'lucide-react';
 
@@ -27,6 +28,7 @@ import SimulationTab from './components/tabs/Simulation';
 import ReleaseTab from './components/tabs/Release';
 import CartTab from './components/tabs/Cart';
 import OrdersTab from './components/tabs/Orders';
+import ExpertWidget from './components/ExpertWidget';
 
 import { AuthProvider, useAuth } from './context/AuthContext';
 import ProfileTab from './components/tabs/Profile';
@@ -52,7 +54,7 @@ const TABS: TabDefinition[] = [
   { id: 'release', label: 'Release', icon: Newspaper, component: ReleaseTab },
   { id: 'cart', label: 'Cart', icon: ShoppingCart, component: CartTab },
   { id: 'orders', label: 'Orders', icon: Package, component: OrdersTab, requiresAuth: true },
-  { id: 'profile', label: 'Profile', icon: Bot, component: ProfileTab, requiresAuth: true },
+  { id: 'profile', label: 'Profile', icon: User, component: ProfileTab, requiresAuth: true },
   { id: 'admin', label: 'Admin', icon: AlertTriangle, component: AdminTab, requiresAdmin: true },
 ];
 
@@ -189,7 +191,7 @@ function AppContent() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
-              className="flex-1 overflow-y-auto"
+              className="flex-1 overflow-y-auto relative"
             >
               {activeTab === 'cart' ? (
                 <ActiveComponent onNavigateToOrders={() => setActiveTab('orders')} />
@@ -198,6 +200,7 @@ function AppContent() {
               )}
             </motion.div>
           </AnimatePresence>
+          <ExpertWidget />
         </main>
       </div>
     </div>
