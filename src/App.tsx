@@ -200,9 +200,9 @@ function AppContent() {
               )}
             </motion.div>
           </AnimatePresence>
-          <ExpertWidget />
         </main>
       </div>
+      <ExpertWidget />
     </div>
   );
 }

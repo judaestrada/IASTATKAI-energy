@@ -65,7 +65,11 @@ export default function ExpertWidget() {
   };
 
   return (
-    <div className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50 flex flex-col items-end">
+    <motion.div 
+      layout
+      className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-[100] flex flex-col items-end"
+      style={{ WebkitTransform: 'translateZ(0)' }}
+    >
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -195,6 +199,6 @@ export default function ExpertWidget() {
           )}
         </div>
       </button>
-    </div>
+    </motion.div>
   );
 }
